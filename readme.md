@@ -195,7 +195,7 @@ For reference each service has their own `.env.sample` file. 🙂
 > **Note**: This project is not deployed. The Postman documentation serves as a reference to help users easily interact with the API without manually figuring out endpoints, request formats, or required data.
 
 ### Postman Documentation
-- **Placeholder Link**: [Postman Collection](#) (Link will be updated once finalized)
+- **Placeholder Link**: [Postman Collection](https://documenter.getpostman.com/view/38176982/2sB2qUmjeV) 
 - Import the collection into Postman to explore and test the API endpoints.
 - All endpoints are accessible through the API Gateway.
 
