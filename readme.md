@@ -1,74 +1,121 @@
-# Social Media Microservice
+# Social Media Microservices Project
 
-## Overview
-This project is a **Social Media Microservice** designed to handle core functionalities of a social media platform, such as user management, posts, and search post. It is built to be scalable, efficient, and easy to integrate with other services.
-It has multiple services.
+## Introduction
+
+This project is built to learn and implement a microservices architecture using Node.js. It simulates a **social media platform** with four core services, all managed behind a central **API Gateway**.
+
+The project covers key microservices concepts such as service communication, event-based architecture, caching, rate limiting, and JWT-based authentication.
+
+---
 
 ## System Architecture
-![Untitled-2024-04-13-0032 excalidraw](https://github.com/user-attachments/assets/4dda9223-ee1f-4cb3-a2f2-697a8e0fdbef)
+![Diagram](https://github.com/user-attachments/assets/4dda9223-ee1f-4cb3-a2f2-697a8e0fdbef)
 
-## Features
-- User authentication and authorization
-- CRUD operations for posts and comments
-- RESTful API endpoints
-- Database integration for persistent storage
-- Logging and error handling
+### Services Overview
 
-## Prerequisites
-- **Node.js** (v14 or higher)
-- **npm** (v6 or higher)
-- **MongoDB** (or any other supported database)
-- **Postman** (optional, for API testing)
+- **API Gateway**: Routes incoming requests to the appropriate service.
+- **Identity (Auth) Service**: Handles authentication and user account creation.
+- **Post Service**: Manages post CRUD operations and integrates with media & messaging systems.
+- **Media Service**: Handles file/media uploads and event-based syncing.
+- **Search Service**: Enables searching of posts.
 
-## Installation
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/your-username/social-media-microservice.git
-    cd social-media-microservice
-    ```
+---
 
-2. Install dependencies:
-    ```bash
-    npm install
-    ```
+## API Gateway
 
-3. Set up environment variables:
-    Create a `.env` file in the root directory and configure the following:
-    ```
-    PORT=3000
-    DATABASE_URL=mongodb://localhost:27017/social-media
-    JWT_SECRET=your_secret_key
-    ```
+- Built with `express-http-proxy`
+- Acts as the entry point for all client requests
+- Verifies authentication using middleware before forwarding to secure routes
 
-4. Start the server:
-    ```bash
-    npm start
-    ```
+---
 
-## API Endpoints
-### Users
-- `POST /api/users/register` - Register a new user
-- `POST /api/users/login` - Authenticate a user
+## Identity / Auth Service
 
-### Posts
-- `GET /api/posts` - Fetch all posts
-- `POST /api/posts` - Create a new post
-- `PUT /api/posts/:id` - Update a post
-- `DELETE /api/posts/:id` - Delete a post
+Handles user authentication and account creation.
 
+### Features:
+- JWT-based Access and Refresh Token system
+- Two types of rate limiting:
+  - `express-rate-limit` (in-memory)
+  - IP-based Redis rate limiter (for DDoS protection)
+- Secures sensitive endpoints with custom middleware
 
+---
 
-## Contributing
-Contributions are welcome! Please follow these steps:
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Submit a pull request with a detailed description.
+## Post Service
 
-## License
-This project is licensed under the [MIT License](LICENSE).
+Handles creation, reading, updating, and deletion of posts.
 
-## Contact
-For any questions or feedback, please contact:
-- **Name:** Nishant Swaroop
-- **Email:** your-email@example.com
-- **GitHub:** [your-username](https://github.com/your-username)
+### Key Features:
+- Event-driven architecture using **RabbitMQ**
+  - Publishes & consumes post-related events
+  - Example: Updates post with image URLs after a `media-success` event
+- Implements caching with **Redis**
+  - `Get All Posts` API is optimized from ~220ms to 20–40ms
+- Includes both `express-rate-limit` and Redis-based rate limiting
+
+---
+
+## Media Service
+
+Manages file and image uploads.
+
+### Key Features:
+- Publishes `media.success` event when uploads complete
+- Listens for `post.delete` events and deletes corresponding media
+- Integrates seamlessly with Post Service via RabbitMQ
+
+---
+
+## Search Service
+
+Provides search functionality over posts.
+
+---
+
+## Rate Limiting
+
+Most services implement both:
+- **Express rate limiting** (basic in-memory)
+- **Redis-based IP rate limiting** (for distributed and DDoS protection)
+
+---
+
+## Tech Stack & Dependencies
+
+### Core:
+- Node.js
+- Express.js
+
+### Messaging & Caching:
+- **RabbitMQ** – Message broker for async communication
+- **Redis** – Used for caching and rate limiting
+
+---
+
+## Getting Started
+
+Coming soon...
+
+(Here you can include instructions like `docker-compose up` or individual service setup.)
+
+---
+
+## Postman Collection
+
+> **Note**: All endpoints are accessible through the API Gateway. Postman documentation link will be added here once finalized.
+
+---
+
+## Notes
+
+- This project is intended for learning and prototyping. Some parts (like production-grade validation, monitoring, security) are simplified.
+- Services are tightly integrated via events, making them loosely coupled but coordinated.
+
+---
+
+## Future Improvements
+
+- Add monitoring/logging
+- Add Kubernetes/Docker Compose orchestration
+- Add service-specific test suites
