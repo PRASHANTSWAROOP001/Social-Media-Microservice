@@ -5,7 +5,7 @@ This project is a **Social Media Microservice** designed to handle core function
 It has multiple services.
 
 ## System Architecture
-
+![Untitled-2024-04-13-0032 excalidraw](https://github.com/user-attachments/assets/4dda9223-ee1f-4cb3-a2f2-697a8e0fdbef)
 
 ## Features
 - User authentication and authorization
